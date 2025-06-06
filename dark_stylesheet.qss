@@ -1,0 +1,114 @@
+/* VSCode Dark Modern Theme */
+
+/* Ana pencere */
+QMainWindow {
+    background-color: #1e1e1e;
+    color: #cccccc;
+}
+
+/* Text Editor'lar */
+QTextEdit {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    border: 1px solid #3c3c3c;
+    border-radius: 4px;
+    padding: 8px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    selection-background-color: #264f78;
+    selection-color: #ffffff;
+}
+
+/* Ana editor (sol panel) */
+QTextEdit[objectName="main_editor"] {
+    background-color: #1e1e1e;
+    border: 1px solid #3c3c3c;
+}
+
+/* Bilgi panelleri (sağ panel) */
+QTextEdit[readOnly="true"] {
+    background-color: #252526;
+    color: #cccccc;
+    border: 1px solid #3c3c3c;
+}
+
+/* Label'lar */
+QLabel {
+    color: #cccccc;
+    background: transparent;
+}
+
+/* Başlık label'ları */
+QLabel[objectName="title_label"] {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 5px 0px;
+}
+
+/* Durum label'ı */
+QLabel[objectName="status_label"] {
+    background-color: #0c7d9d;
+    color: #ffffff;
+    border: 1px solid #0c7d9d;
+    border-radius: 3px;
+    padding: 6px 10px;
+    font-weight: 500;
+}
+
+/* Menu Bar */
+QMenuBar {
+    background-color: #2d2d30;
+    color: #cccccc;
+    border-bottom: 1px solid #3c3c3c;
+}
+
+QMenuBar::item {
+    background-color: transparent;
+    padding: 6px 10px;
+}
+
+QMenuBar::item:selected {
+    background-color: #37373d;
+}
+
+QMenuBar::item:pressed {
+    background-color: #007acc;
+}
+
+/* Menu */
+QMenu {
+    background-color: #2d2d30;
+    color: #cccccc;
+    border: 1px solid #454545;
+}
+
+QMenu::item {
+    padding: 5px 20px;
+}
+
+QMenu::item:selected {
+    background-color: #37373d;
+}
+
+/* Status Bar */
+QStatusBar {
+    background-color: #007acc;
+    color: #ffffff;
+    border-top: 1px solid #007acc;
+}
+
+/* Splitter */
+QSplitter::handle {
+    background-color: #3c3c3c;
+    width: 1px;
+}
+
+QSplitter::handle:hover {
+    background-color: #007acc;
+}
+
+/* Widget container */
+QWidget {
+    background-color: #1e1e1e;
+    color: #cccccc;
+}
