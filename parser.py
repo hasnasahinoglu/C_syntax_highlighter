@@ -1,10 +1,10 @@
 
 from c_lexer_base import *
-from labCode_v2.c_lexer_main import CLexer
+from c_lexer_main import CLexer
 
 
 class ASTNode:
-    """Abstract Syntax Tree node"""
+    #Abstract Syntax Tree node
     def __init__(self, node_type, value=None, children=None):
         self.type = node_type
         self.value = value
@@ -21,7 +21,6 @@ class ASTNode:
         return f"{self.type}({self.value})"
 
     def to_string(self, indent=0):
-        """Tree görünümü için string representation"""
         result = "  " * indent + str(self) + "\n"
         for child in self.children:
             if isinstance(child, ASTNode):
@@ -31,7 +30,7 @@ class ASTNode:
         return result
 
 class CParser:
-    """C Language Recursive Descent Parser"""
+    #Recursive Descent Parser
 
     def __init__(self, tokens):
         self.tokens = tokens
@@ -48,19 +47,16 @@ class CParser:
         return Token(TokenType.EOF, "", 0, 0)
 
     def peek_token(self, offset=1):
-        """İleri bakma"""
         pos = self.current + offset
         if pos < len(self.tokens):
             return self.tokens[pos]
         return Token(TokenType.EOF, "", 0, 0)
 
     def advance(self):
-        """Bir sonraki token'a geç"""
         if self.current < len(self.tokens):
             self.current += 1
 
     def match(self, expected_type):
-        """Token tipini kontrol et ve eşleşirse advance et"""
         if self.current_token().type == expected_type:
             token = self.current_token()
             self.advance()
@@ -68,49 +64,43 @@ class CParser:
         return None
 
     def expect(self, expected_type):
-        """Token'ı bekle, yoksa hata ver"""
         token = self.match(expected_type)
         if token is None:
             self.add_error(f"Expected {expected_type}, got {self.current_token().type}")
         return token
 
     def add_error(self, message):
-        """Hata ekle ve maksimum hata sayısını kontrol et"""
         if len(self.errors) < self.max_errors:
             current_token = self.current_token()
             self.errors.append(f"{message} at line {current_token.line}, column {current_token.column}")
 
     def check_recursion_depth(self):
-        """Recursion derinliğini kontrol et"""
         if self.recursion_depth > self.max_recursion_depth:
             self.add_error("Maximum recursion depth exceeded - possible infinite loop")
             return False
         return True
 
     def enter_recursion(self):
-        """Recursion'a gir"""
         self.recursion_depth += 1
         return self.check_recursion_depth()
 
     def exit_recursion(self):
-        """Recursion'dan çık"""
         self.recursion_depth -= 1
 
     def skip_to_next_statement(self):
-        """Geliştirilmiş hata recovery - bir sonraki statement'a atla"""
+        #bir sonraki statement'a atla hata recovery için
         recovery_tokens = [
             TokenType.SEMICOLON, TokenType.LEFT_BRACE, TokenType.RIGHT_BRACE,
             TokenType.EOF, TokenType.PREPROCESSOR
         ]
 
-        # Keywords that can start a new statement
         statement_keywords = ['if', 'while', 'for', 'return', 'int', 'float', 'char', 'void', 'double']
 
         start_pos = self.current
 
         while (self.current_token().type != TokenType.EOF and
                self.current < len(self.tokens) and
-               self.current - start_pos < 100):  # Sonsuz döngü koruması
+               self.current - start_pos < 100):
 
             current = self.current_token()
 
@@ -128,13 +118,13 @@ class CParser:
             self.advance()
 
     def skip_until_balanced(self, open_token, close_token):
-        """Balanced token'lara kadar atla (parantez, bracket, brace)"""
+        #parantez, bracket, brace
         depth = 1
         start_pos = self.current
 
         while (self.current_token().type != TokenType.EOF and
                depth > 0 and
-               self.current - start_pos < 200):  # Sonsuz döngü koruması
+               self.current - start_pos < 200):
 
             current = self.current_token()
 
@@ -146,7 +136,7 @@ class CParser:
             self.advance()
 
     def synchronize(self):
-        """Global synchronization - major syntax error'dan sonra"""
+        #major syntax error'dan sonra
         self.advance()  # Geçerli token'ı atla
 
         while self.current_token().type != TokenType.EOF:
@@ -166,7 +156,6 @@ class CParser:
             self.advance()
 
     def parse_program(self):
-        """Ana program parse fonksiyonu"""
         program = ASTNode("Program")
 
         while self.current_token().type != TokenType.EOF:
@@ -203,14 +192,13 @@ class CParser:
         return program
 
     def parse_preprocessor(self):
-        """Preprocessor directive parse et"""
         token = self.match(TokenType.PREPROCESSOR)
         if token:
             return ASTNode("Preprocessor", token.value)
         return None
 
     def parse_declaration(self):
-        """Declaration parse et (variable veya function)"""
+        #variable veya function
         # Type specifier bekliyoruz (int, float, char, void, etc.)
         if self.current_token().type != TokenType.KEYWORD:
             return None
@@ -683,7 +671,7 @@ class CParser:
         return self.parse_postfix_expression()
 
     def parse_postfix_expression(self):
-        """Postfix expression parse et - infinite loop koruması ile"""
+        """Postfix expression parse et"""
         left = self.parse_primary_expression()
         if not left:
             return None
@@ -753,7 +741,7 @@ class CParser:
         return args
 
     def parse_primary_expression(self):
-        """Primary expression parse et - improved error handling"""
+        """Primary expression parse et"""
         token = self.current_token()
 
         if token.type == TokenType.IDENTIFIER:
@@ -794,7 +782,7 @@ class CParser:
 
 
 class CodeAnalyzer:
-    """Ana analiz sınıfı - GUI ile entegrasyon için"""
+    """Ana analiz sınıfı"""
 
     def __init__(self):
         self.lexer = None
@@ -870,115 +858,3 @@ class CodeAnalyzer:
     def is_valid_syntax(self):
         """Syntax'ın geçerli olup olmadığını kontrol et"""
         return len(self.errors) == 0
-
-
-# Test fonksiyonu
-def test_parser():
-    """Parser'ı test et"""
-    test_cases = [
-        # Normal C code
-        '''#include <stdio.h>
-
-int main() {
-    int x = 42;
-    float y = 3.14;
-    
-    if (x == 42) {
-        printf("Hello World");
-    }
-    
-    return 0;
-}''',
-
-        # Problematic input that caused infinite recursion
-        '''(){};''',
-
-        # Missing semicolon
-        '''int main() {
-    int x = 5
-    return 0;
-}''',
-
-        # Unbalanced parentheses
-        '''int main() {
-    if (x == 5 {
-        return 1;
-    }
-    return 0;
-}''',
-
-        # Complex nested expressions
-        '''int main() {
-    int arr[10];
-    arr[func(a, b, c)] = getValue() + 5 * (x - y);
-    return 0;
-}'''
-    ]
-
-    for i, test_code in enumerate(test_cases):
-        print(f"\n{'='*50}")
-        print(f"TEST CASE {i+1}:")
-        print(f"{'='*50}")
-        print("CODE:")
-        print(test_code)
-        print("\nANALYSIS:")
-
-        analyzer = CodeAnalyzer()
-        if analyzer.analyze(test_code):
-            print("✓ Analysis completed successfully")
-
-            errors = analyzer.get_errors()
-            if errors:
-                print(f"\n⚠ Found {len(errors)} syntax errors:")
-                for error in errors:
-                    print(f"  - {error}")
-            else:
-                print("\n✓ No syntax errors found")
-
-            print(f"\n📊 Token count: {len(analyzer.tokens)}")
-            print(f"🌳 AST generated: {'Yes' if analyzer.ast else 'No'}")
-
-        else:
-            print("✗ Analysis failed:")
-            for error in analyzer.get_errors():
-                print(f"  - {error}")
-
-# Advanced test for specific problematic cases
-def test_edge_cases():
-    """Edge case'leri test et"""
-    print("\n" + "="*60)
-    print("EDGE CASE TESTING")
-    print("="*60)
-
-    edge_cases = [
-        ("Empty parentheses", "()"),
-        ("Empty braces", "{}"),
-        ("Nested empty", "(){}"),
-        ("Complex nesting", "((()))"),
-        ("Unbalanced", "((())"),
-        ("Mixed brackets", "()[]{()}"),
-        ("Function without body", "int func();"),
-        ("Variable without semicolon", "int x"),
-    ]
-
-    for name, code in edge_cases:
-        print(f"\n--- {name}: '{code}' ---")
-        analyzer = CodeAnalyzer()
-
-        start_time = time.time()
-        success = analyzer.analyze(code)
-        end_time = time.time()
-
-        print(f"Time: {(end_time - start_time)*1000:.2f}ms")
-        print(f"Success: {success}")
-        print(f"Errors: {len(analyzer.get_errors())}")
-
-        if analyzer.get_errors():
-            print("Error details:")
-            for error in analyzer.get_errors()[:3]:  # Show max 3 errors
-                print(f"  - {error}")
-
-if __name__ == "__main__":
-    import time
-    test_parser()
-    test_edge_cases()

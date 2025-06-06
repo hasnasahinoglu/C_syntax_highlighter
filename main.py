@@ -17,40 +17,33 @@ class LabCodeApp(QMainWindow):
         self.load_stylesheet()
 
     def initUI(self):
-        # Ana pencere ayarları
         self.setWindowTitle('Real-Time C Syntax Highlighter')
         self.setGeometry(100, 100, 1200, 800)
         
-        # Merkezi widget
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         
-        # Ana layout
         main_layout = QVBoxLayout(central_widget)
         
-        # Menu bar oluştur
         self.create_menu_bar()
         
-        # Splitter ile editor ve info paneli
         splitter = QSplitter(Qt.Orientation.Horizontal)
         
         # Sol panel - Editor
         editor_widget = QWidget()
         editor_layout = QVBoxLayout(editor_widget)
         
-        # Editor başlığı
         editor_label = QLabel("C Code Editor")
         editor_label.setObjectName("title_label")
         editor_layout.addWidget(editor_label)
         
-        # Text editor
         self.text_editor = CustomSyntaxTextEditor()
         # Analysis completed signal'ını bağla
         self.text_editor.analysisCompleted.connect(self.update_analysis_results)
         self.text_editor.textChanged.connect(self.update_status)
         self.text_editor.setObjectName("main_editor")
         self.text_editor.setFont(QFont('Consolas', 12))
-        self.text_editor.setPlaceholderText("C kodunuzu buraya yazın...\n\n// örnek:\n#include <stdio.h>\n\nint main() {\n    printf(\"Hello World!\");\n    return 0;\n}")
+        self.text_editor.setPlaceholderText("Code here...")
         editor_layout.addWidget(self.text_editor)
 
         splitter.addWidget(editor_widget)
@@ -59,29 +52,25 @@ class LabCodeApp(QMainWindow):
         info_widget = QWidget()
         info_layout = QVBoxLayout(info_widget)
         
-        # Bilgi paneli başlığı
         info_label = QLabel("Syntax Analysis Info")
         info_label.setObjectName("title_label")
         info_layout.addWidget(info_label)
         
-        # Token bilgi alanı
         self.token_info = QTextEdit()
         self.token_info.setMaximumHeight(200)
         self.token_info.setFont(QFont('Consolas', 10))
-        self.token_info.setPlaceholderText("Token bilgileri burada görünecek...")
+        self.token_info.setPlaceholderText("Token info")
         self.token_info.setReadOnly(True)
         info_layout.addWidget(QLabel("Detected Tokens:"))
         info_layout.addWidget(self.token_info)
         
-        # Parse tree bilgi alanı
         self.parse_info = QTextEdit()
         self.parse_info.setFont(QFont('Consolas', 10))
-        self.parse_info.setPlaceholderText("Parse tree bilgileri burada görünecek...")
+        self.parse_info.setPlaceholderText("Parse info")
         self.parse_info.setReadOnly(True)
         info_layout.addWidget(QLabel("Parse Tree:"))
         info_layout.addWidget(self.parse_info)
         
-        # Durum bilgisi
         self.status_info = QLabel("Ready - Real-time analysis active")
         self.status_info.setObjectName("status_label")
         info_layout.addWidget(QLabel("Status:"))
@@ -89,19 +78,15 @@ class LabCodeApp(QMainWindow):
         
         splitter.addWidget(info_widget)
         
-        # Splitter boyutları (sol paneli daha geniş yap)
         splitter.setSizes([800, 400])
         
         main_layout.addWidget(splitter)
         
-        # Alt durum çubuğu
         self.create_status_bar()
 
     def create_menu_bar(self):
-        # Menü çubuğu
         menubar = self.menuBar()
         
-        # File menüsü
         file_menu = menubar.addMenu('&File')
         
         open_action = QAction('&Open', self)
@@ -121,7 +106,6 @@ class LabCodeApp(QMainWindow):
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
         
-        # View menüsü
         view_menu = menubar.addMenu('&View')
         
         clear_action = QAction('&Clear All', self)
@@ -132,7 +116,6 @@ class LabCodeApp(QMainWindow):
         self.statusBar().showMessage('Ready - Real-time C Syntax Highlighter')
 
     def update_status(self):
-        """Text değiştiğinde Status Bar güncelle"""
         text_length = len(self.text_editor.toPlainText())
         line_count = self.text_editor.document().blockCount()
 
@@ -147,7 +130,6 @@ class LabCodeApp(QMainWindow):
             self.clear_analysis_info()
 
     def update_analysis_results(self, result):
-        """Analiz sonuçlarını güncelle"""
         if result['success']:
             # Token info güncelle
             if hasattr(self, 'token_info'):
@@ -174,7 +156,6 @@ class LabCodeApp(QMainWindow):
             self.update_status_info("Analysis failed")
 
     def clear_analysis_info(self):
-        """Analiz bilgilerini temizle"""
         self.token_info.clear()
         self.parse_info.clear()
     
@@ -206,14 +187,12 @@ class LabCodeApp(QMainWindow):
         self.update_status_info("Cleared - Ready for new code")
     
     def update_status_info(self, message):
-        """Durum bilgisini güncelle"""
         self.status_info.setText(message)
     
     def load_stylesheet(self):
-        """Stylesheet dosyasını yükle"""
         try:
             # Stylesheet dosyasını bul
-            style_file = '../labCode_v1/dark_stylesheet.qss'
+            style_file = 'dark_stylesheet.qss'
             
             # Eğer dosya yoksa varsayılan stil kullan
             if os.path.exists(style_file):
@@ -237,12 +216,10 @@ class LabCodeApp(QMainWindow):
                 """)
         except Exception as e:
             print(f"Stylesheet yüklenemedi: {e}")
-            # Hata durumunda varsayılan stil
 
 def main():
     app = QApplication(sys.argv)
     
-    # Uygulama stili
     app.setStyle('Fusion')
     
     window = LabCodeApp()

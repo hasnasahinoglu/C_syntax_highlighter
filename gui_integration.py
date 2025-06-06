@@ -1,5 +1,3 @@
-
-
 from parser import CodeAnalyzer
 
 class RealTimeAnalyzer:

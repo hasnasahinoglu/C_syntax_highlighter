@@ -1,7 +1,6 @@
 
 # lexer için gerekli olan token tipleri, state'ler ve transition table'lar
 
-
 from enum import Enum, auto
 
 
