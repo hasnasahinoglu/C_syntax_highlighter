@@ -52,7 +52,6 @@ proje/
 
 - 📘 [Proje Raporu (PDF)](PD_DonemProjesi_HasnaSahinoglu_22360859005.pdf)
 - ✍️ [Medium Yazısı](https://medium.com/@hasna.sahinoglu/ger%C3%A7ek-zamanl%C4%B1-c-s%C3%B6zdizimi-vurgulama-sistemi-python-ile-derleyici-uygulamas%C4%B1-7b8eea2ba2c8)
-- ▶️ [YouTube Tanıtım Videosu](https://youtube.com/your-demo-video)
 
 ---
 

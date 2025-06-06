@@ -1,4 +1,3 @@
-#!C:\Users\SPECTRE\Uni_Notes\Bahar2\ProgramlamaDilleri\LabCodeProject\labcode_venv\Scripts\python.exe
 
 import sys
 import os
